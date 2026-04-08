@@ -1,0 +1,51 @@
+# Source files (dist is published)
+src/
+tests/
+
+# Config files
+tsconfig.json
+vitest.config.ts
+.eslintrc*
+.prettierrc*
+
+# Development
+*.tsbuildinfo
+coverage/
+
+# Documentation (except README)
+docs/
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# npm
+node_modules/
+*.tgz
+package-lock.json
+
+# Environment
+.env
+.env.*
+
+# CI
+.github/
+
+# Claude
+.claude/
+.mcp.json
+
+# Scripts
+publish.sh
