@@ -152,4 +152,64 @@ describe("createSandbox", () => {
     expect(result.result).toBe("line2\nline3");
     sandbox.dispose();
   });
+
+  it("handles concurrent executions without interference", async () => {
+    const sandbox = createSandbox("test");
+    const [r1, r2, r3] = await Promise.all([
+      sandbox.execute("1 + 1"),
+      sandbox.execute("2 + 2"),
+      sandbox.execute("3 + 3"),
+    ]);
+    expect(r1.result).toBe(2);
+    expect(r2.result).toBe(4);
+    expect(r3.result).toBe(6);
+    // Each execution should have its own logs
+    expect(r1.logs).toEqual([]);
+    expect(r2.logs).toEqual([]);
+    expect(r3.logs).toEqual([]);
+    sandbox.dispose();
+  });
+
+  it("destructuring works when RHS is defined in same execution", async () => {
+    const sandbox = createSandbox("test");
+    const result = await sandbox.execute(
+      "const obj = { x: 1, y: 2 }\nconst { x, y } = obj\nx + y",
+    );
+    expect(result.result).toBe(3);
+    expect(result.error).toBeUndefined();
+    sandbox.dispose();
+  });
+
+  it("clears memory on dispose", async () => {
+    const sandbox = createSandbox("test");
+    await sandbox.execute('memory.push("data")');
+    expect(sandbox.getMemory()).toEqual(["data"]);
+    sandbox.dispose();
+    expect(sandbox.getMemory()).toEqual([]);
+  });
+
+  it("captures console.warn with prefix", async () => {
+    const sandbox = createSandbox("test");
+    const result = await sandbox.execute('console.warn("caution")');
+    expect(result.logs[0]).toContain("[WARN]");
+    expect(result.logs[0]).toContain("caution");
+    sandbox.dispose();
+  });
+
+  it("handles syntax errors gracefully", async () => {
+    const sandbox = createSandbox("test");
+    const result = await sandbox.execute("const = ;");
+    expect(result.error).toBeDefined();
+    expect(result.result).toBeNull();
+    sandbox.dispose();
+  });
+
+  it("grep returns empty for invalid regex", async () => {
+    const sandbox = createSandbox("test content", {
+      builtins: [GREP_IMPL],
+    });
+    const result = await sandbox.execute('grep("[invalid")');
+    expect(result.result).toEqual([]);
+    sandbox.dispose();
+  });
 });

@@ -14,20 +14,20 @@ describe("extractDeclarations", () => {
     expect(mainCode).toBe("y = 'hello'");
   });
 
-  it("converts destructuring to var", () => {
+  it("keeps destructuring in mainCode to avoid ordering bugs", () => {
     const { declarations, mainCode } = extractDeclarations(
       "const { a, b } = obj",
     );
-    expect(declarations).toEqual(["var { a, b } = obj"]);
-    expect(mainCode).toBe("");
+    expect(declarations).toEqual([]);
+    expect(mainCode).toBe("var { a, b } = obj");
   });
 
-  it("converts array destructuring to var", () => {
+  it("keeps array destructuring in mainCode", () => {
     const { declarations, mainCode } = extractDeclarations(
       "let [x, y] = arr",
     );
-    expect(declarations).toEqual(["var [x, y] = arr"]);
-    expect(mainCode).toBe("");
+    expect(declarations).toEqual([]);
+    expect(mainCode).toBe("var [x, y] = arr");
   });
 
   it("ignores indented declarations (inside blocks)", () => {

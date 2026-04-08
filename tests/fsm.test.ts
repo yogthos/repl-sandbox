@@ -153,4 +153,37 @@ describe("FSMEngine", () => {
     const result = await engine.run(spec, { value: 0, done: false });
     expect(result.value).toBe(99);
   });
+
+  it("executes terminal state handler before returning", async () => {
+    let terminalHandlerRan = false;
+    const spec: FSMSpec<Counter> = {
+      initial: "start",
+      terminal: new Set(["done"]),
+      states: new Map([
+        [
+          "start",
+          {
+            handler: (ctx) => ctx,
+            transitions: [["done", () => true]],
+          },
+        ],
+        [
+          "done",
+          {
+            handler: (ctx) => {
+              terminalHandlerRan = true;
+              return { ...ctx, value: 999, done: true };
+            },
+            transitions: [],
+          },
+        ],
+      ]),
+    };
+
+    const engine = new FSMEngine<Counter>();
+    const result = await engine.run(spec, { value: 0, done: false });
+    expect(terminalHandlerRan).toBe(true);
+    expect(result.value).toBe(999);
+    expect(result.done).toBe(true);
+  });
 });

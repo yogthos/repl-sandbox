@@ -13,7 +13,8 @@
  *
  * Converts `const x = ...` / `let x = ...` at indent <=2 to `var x;` at
  * context scope (persists between turns) and keeps the assignment in main code.
- * Destructuring declarations are converted in-place to `var`.
+ * Destructuring declarations stay in mainCode (converted to `var`) to avoid
+ * ordering bugs when the RHS references variables defined in the same execution.
  */
 export function extractDeclarations(code: string): {
   declarations: string[];
@@ -39,8 +40,10 @@ export function extractDeclarations(code: string): {
       if (match) {
         const varName = match[1];
         if (varName.startsWith("{") || varName.startsWith("[")) {
-          // Destructuring — keep full declaration but convert to var
-          declarations.push(line.replace(/^(\s*)(?:const|let)/, "$1var"));
+          // Destructuring — keep in mainCode to avoid ordering issues
+          // when RHS references variables defined in the same execution.
+          // Convert to var so it's IIFE-scoped (won't persist across executions).
+          mainLines.push(line.replace(/^(\s*)(?:const|let)/, "$1var"));
         } else {
           // Simple variable — declare at context level, assign in main
           declarations.push(`var ${varName};`);
