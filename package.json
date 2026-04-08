@@ -1,0 +1,65 @@
+{
+  "name": "repl-sandbox",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Reusable VM sandbox with REPL state persistence, session management, FSM engine, and correction loop",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./sandbox": {
+      "types": "./dist/sandbox.d.ts",
+      "default": "./dist/sandbox.js"
+    },
+    "./builtins": {
+      "types": "./dist/builtins/index.d.ts",
+      "default": "./dist/builtins/index.js"
+    },
+    "./session": {
+      "types": "./dist/session.d.ts",
+      "default": "./dist/session.js"
+    },
+    "./fsm": {
+      "types": "./dist/fsm.d.ts",
+      "default": "./dist/fsm.js"
+    },
+    "./correction-loop": {
+      "types": "./dist/correction-loop.d.ts",
+      "default": "./dist/correction-loop.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "vm",
+    "sandbox",
+    "repl",
+    "session",
+    "fsm",
+    "state-machine"
+  ],
+  "license": "Apache-2.0",
+  "author": "yogthos",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.17"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
