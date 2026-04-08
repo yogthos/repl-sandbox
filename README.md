@@ -1,6 +1,6 @@
 # repl-sandbox
 
-Reusable Node.js VM sandbox with REPL state persistence, injectable builtins, session management, an FSM engine, and a bounded correction loop. Extracted from [matryoshka](https://github.com/yogthos/Matryoshka) and [chiasmus](https://github.com/yogthos/chiasmus).
+Reusable Node.js VM sandbox with REPL state persistence, injectable builtins, session management, an FSM engine, and a bounded correction loop used by [matryoshka](https://github.com/yogthos/Matryoshka) and [chiasmus](https://github.com/yogthos/chiasmus).
 
 Zero runtime dependencies — only uses Node.js `vm` and `crypto`.
 
